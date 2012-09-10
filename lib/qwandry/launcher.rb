@@ -35,9 +35,14 @@ module Qwandry
       paths = package.is_a?(String) ? [package] : package.paths
       # Editors may have options, 'mate -w' for instance
       editor_and_options = editor.strip.split(/\s+/)
-      
+
       # Launch the editor with its options and any paths that we have been passed
-      system(*(editor_and_options + paths))
+      
+      if File.directory?(paths.first)
+        Dir.chdir(paths.first) { system(*(editor_and_options)) }
+      else
+        system(*(editor_and_options + paths))
+      end
     end
     
     private
